@@ -1,0 +1,39 @@
+<!doctype html>
+<html  lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(_, ~{}, ~{}, ~{::div}, ~{})}">
+<body>
+<div>
+    <div>
+        <a class="btn btn-light" th:href="@{/queueManagers/toAdd}">添加队列管理器</a>
+    </div>
+    <div class="divider"></div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">序号</th>
+                <th scope="col">名称</th>
+                <th scope="col">描述</th>
+                <th scope="col">ip</th>
+                <th scope="col">端口</th>
+                <th scope="col">字符集编码</th>
+                <th scope="col">通道名称</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="qm, stat : ${queueManagerList}">
+                <th scope="row" th:text="${stat.count}"></th>
+                <td th:text="${qm.name}"></td>
+                <td th:text="${qm.describe}"></td>
+                <td th:text="${qm.ip}"></td>
+                <td th:text="${qm.port}"></td>
+                <td th:text="${qm.ccsid}"></td>
+                <td th:text="${qm.channel}"></td>
+                <td>
+                    <a th:href="@{/queueManagers/delete(id=${qm.id})}" th:onclick="return confirm('确定要删除 [[${qm.name}]] 队列管理器?')" class="btn btn-danger btn-sm">删除</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

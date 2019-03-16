@@ -1,0 +1,38 @@
+<!doctype html>
+<html  lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(_, ~{}, ~{}, ~{::div}, ~{::script})}">
+<body>
+<div>
+    <div>
+        <a class="btn btn-light" th:href="@{/queues/toAdd}">添加队列</a>
+    </div>
+    <div class="divider"></div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">序号</th>
+                <th scope="col">名称</th>
+                <th scope="col">描述</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="q, stat : ${queueList}">
+                <th scope="row" th:text="${stat.count}"></th>
+                <td th:text="${q.name}"></td>
+                <td th:text="${q.describe}"></td>
+                <td>
+                    <a th:href="@{/queues/delete(id=${q.id})}" th:onclick="return confirm('确定要删除 [[${q.name}]] 队列?')" class="btn btn-danger btn-sm">删除</a>
+                    <!--<button type="button" class="btn btn-info btn-sm" th:onclick="openWebSocket(onMessage, [[${q.id}]])">监控</button>-->
+                    <a class="btn btn-info btn-sm" th:href="@{/queues/show(id=${q.id})}">监控</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    function onMessage(data) {
+        console.info("data=[" + data + "]");
+    }
+</script>
+</body>
+</html>
