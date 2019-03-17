@@ -1,5 +1,7 @@
 package online.zhaopei.mqoperation.websocket;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.timeout.IdleStateEvent;
 import online.zhaopei.mqoperation.constant.CommonConstant;
@@ -11,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.yeauty.annotation.*;
 import org.yeauty.pojo.ParameterMap;
 import org.yeauty.pojo.Session;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledFuture;
 
@@ -46,19 +50,29 @@ public class QueueWebSocket {
 
         String qid = parameterMap.getParameter("qid");
 
-        scheduledFuture = this.threadPoolTaskScheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-//                    session.sendText(CommonConstant.TIME_FORMAT.format(Calendar.getInstance().getTime()) + ","
-//                            + monitorQueueStatusTask.getQueueDepth(Long.valueOf(qid)));
-                    session.sendText(CommonConstant.DATE_TIME_FORMAT.format(Calendar.getInstance().getTime()) + ","
-                            + monitorQueueStatusTask.getQueueDepth(Long.valueOf(qid)));
-                } catch (Exception e) {
-                    CommonUtils.logError(logger, e);
+        String qmid = parameterMap.getParameter("qmid");
+
+        if (!StringUtils.isEmpty(qid) || !StringUtils.isEmpty(qmid)) {
+            scheduledFuture = this.threadPoolTaskScheduler.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String time = CommonConstant.DATE_TIME_FORMAT.format(Calendar.getInstance().getTime());
+                        if (!StringUtils.isEmpty(qmid) && Long.valueOf(qmid) > 0) {
+                            session.sendText(monitorQueueStatusTask.getQueueDepthJsonByManagerId(Long.valueOf(qmid)).toJSONString());
+                        } else {
+                            if (Long.valueOf(qid) > 0) {
+                                session.sendText(time + "," + monitorQueueStatusTask.getQueueDepth(Long.valueOf(qid)));
+                            } else {
+                                session.sendText(monitorQueueStatusTask.getAllQueueDepthJson().toJSONString());
+                            }
+                        }
+                    } catch (Exception e) {
+                        CommonUtils.logError(logger, e);
+                    }
                 }
-            }
-        }, new PeriodicTrigger(2000));
+            }, new PeriodicTrigger(2000));
+        }
     }
 
     @OnClose

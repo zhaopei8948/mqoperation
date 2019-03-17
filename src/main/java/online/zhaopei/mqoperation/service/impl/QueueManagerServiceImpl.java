@@ -1,6 +1,8 @@
 package online.zhaopei.mqoperation.service.impl;
 
+import online.zhaopei.mqoperation.dao.QueueDao;
 import online.zhaopei.mqoperation.dao.QueueManagerDao;
+import online.zhaopei.mqoperation.domain.Queue;
 import online.zhaopei.mqoperation.domain.QueueManager;
 import online.zhaopei.mqoperation.service.QueueManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class QueueManagerServiceImpl implements QueueManagerService {
 
     @Autowired
     private QueueManagerDao queueManagerDao;
+
+    @Autowired
+    private QueueDao queueDao;
 
     @Override
     public void insert(QueueManager queueManager) {
@@ -33,6 +38,9 @@ public class QueueManagerServiceImpl implements QueueManagerService {
 
     @Override
     public void deleteById(long id) {
+        this.queueDao.delete(new Queue() {{
+            this.setManagerId(id);
+        }});
         this.queueManagerDao.deleteById(id);
     }
 

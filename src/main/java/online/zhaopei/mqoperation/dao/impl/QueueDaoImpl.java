@@ -3,6 +3,7 @@ package online.zhaopei.mqoperation.dao.impl;
 import online.zhaopei.mqoperation.dao.QueueDao;
 import online.zhaopei.mqoperation.domain.Queue;
 import online.zhaopei.mqoperation.domain.QueueManager;
+import online.zhaopei.mqoperation.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -85,7 +86,7 @@ public class QueueDaoImpl implements QueueDao {
         StringBuilder sql = new StringBuilder("delete from queue where ");
         sql.append(this.buildConditionSql(queue, false));
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(queue);
-        return this.namedParameterJdbcTemplate.update(sql.toString(), namedParameters);
+        return this.namedParameterJdbcTemplate.update(CommonUtils.removeAnd(sql.toString()), namedParameters);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class QueueDaoImpl implements QueueDao {
 
     @Override
     public int update(Queue queue) {
-        String sql = new String("update queue set name = :name, describe = :describe where id = :id");
+        String sql = new String("update queue set name = :name, describe = :describe, manager_id = :managerId where id = :id");
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(queue);
         return this.namedParameterJdbcTemplate.update(sql, namedParameters);
     }
@@ -105,6 +106,7 @@ public class QueueDaoImpl implements QueueDao {
     public List<Queue> select(Queue queue) {
         StringBuilder sql = new StringBuilder("select * from queue where 1 = 1 ");
         sql.append(this.buildConditionSql(queue, false));
+        sql.append(" order by id");
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(queue);
         return this.namedParameterJdbcTemplate.query(sql.toString(), namedParameters, this.rowMapper);
     }

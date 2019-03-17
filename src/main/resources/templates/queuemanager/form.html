@@ -2,31 +2,31 @@
 <html  lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(_, ~{}, ~{}, ~{::div}, ~{})}">
 <body>
 <div>
-    <form th:action="@{/queueManagers/add}" method="post">
+    <form th:action="@{${queueManager.id == null ? '/queueManagers/add' : '/queueManagers/update'}}" method="post">
         <input type="hidden" name="id" th:value="${queueManager.id}"/>
         <div class="form-group">
             <label>名称</label>
-            <input type="text" class="form-control" placeholder="名称" name="name" required="required"/>
+            <input type="text" class="form-control" placeholder="名称" name="name" required="required" th:value="${queueManager.name}"/>
         </div>
         <div class="form-group">
             <label>描述</label>
-            <input type="text" class="form-control" placeholder="描述" name="describe" required="required"/>
+            <input type="text" class="form-control" placeholder="描述" name="describe" required="required" th:value="${queueManager.describe}"/>
         </div>
         <div class="form-group">
             <label>ip</label>
-            <input type="text" class="form-control" placeholder="ip" name="ip" required="required"/>
+            <input type="text" class="form-control" placeholder="ip" name="ip" required="required" th:value="${queueManager.ip}"/>
         </div>
         <div class="form-group">
             <label>端口</label>
-            <input type="number" max="65535" min="1" class="form-control" placeholder="端口" name="port" required="required"/>
+            <input type="number" max="65535" min="1" class="form-control" placeholder="端口" name="port" required="required" th:value="${queueManager.port}"/>
         </div>
         <div class="form-group">
             <label>字符集编码</label>
-            <input type="number" min="1" class="form-control" placeholder="字符集编码" name="ccsid" required="required"/>
+            <input type="number" min="1" class="form-control" placeholder="字符集编码" name="ccsid" required="required" th:value="${queueManager.ccsid}"/>
         </div>
         <div class="form-group">
             <label>通道名称</label>
-            <input type="text" class="form-control" placeholder="通道名称" name="channel" required="required"/>
+            <input type="text" class="form-control" placeholder="通道名称" name="channel" required="required" th:value="${queueManager.channel}"/>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">提交</button>

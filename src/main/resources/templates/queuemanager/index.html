@@ -29,7 +29,9 @@
                 <td th:text="${qm.ccsid}"></td>
                 <td th:text="${qm.channel}"></td>
                 <td>
-                    <a th:href="@{/queueManagers/delete(id=${qm.id})}" th:onclick="return confirm('确定要删除 [[${qm.name}]] 队列管理器?')" class="btn btn-danger btn-sm">删除</a>
+                    <a th:href="@{/queueManagers/delete(id=${qm.id})}" th:onclick="return confirm('确定要删除 [[${qm.name}]] 队列管理器, 同时删除下面的所有队列?')" class="btn btn-danger btn-sm">删除</a>
+                    <a class="btn btn-primary btn-sm" th:href="@{/queueManagers/toUpdate(id=${qm.id})}">更新</a>
+                    <a class="btn btn-info btn-sm" th:href="@{/queueManagers/show(id=${qm.id})}">监控</a>
                 </td>
             </tr>
         </tbody>

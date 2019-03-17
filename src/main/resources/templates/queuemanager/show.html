@@ -45,22 +45,6 @@
                     {type: 'max', name: '最大值'},
                     {type: 'min', name: '最小值'}
                 ]
-            },
-            markLine: {
-                silent: true,
-                data: [{
-                    yAxis: 100
-                }, {
-                    yAxis: 1000
-                }, {
-                    yAxis: 5000
-                }, {
-                    yAxis: 10000
-                }, {
-                    yAxis: 50000
-                }, {
-                    yAxis: 100000
-                }]
             }
         });
         legendData.push(queues[i].name + ":" + queues[i].describe);
@@ -69,7 +53,7 @@
 
     option = {
         title: {
-            text: '所有队列'
+            text: '[[${queueManager.name}]]:[[${queueManager.describe}]]'
         },
         tooltip: {
             trigger: 'axis',
@@ -97,46 +81,11 @@
                 show: true
             }
         },
-        visualMap: {
-            top: 10,
-            right: 10,
-            pieces: [{
-                gt: 0,
-                lte: 100,
-                color: '#096'
-            }, {
-                gt: 100,
-                lte: 1000,
-                color: '#ffde33'
-            }, {
-                gt: 1000,
-                lte: 5000,
-                color: '#ff9933'
-            }, {
-                gt: 5000,
-                lte: 10000,
-                color: '#cc0033'
-            }, {
-                gt: 10000,
-                lte: 50000,
-                color: '#660099'
-            }, {
-                gt: 50000,
-                lte: 100000,
-                color: '#7e0023'
-            }, {
-                gt: 100000,
-                color: '#0000FF'
-            }],
-            outOfRange: {
-                color: '#999'
-            }
-        },
         series: series
     };
 
     queueInfoChar.setOption(option);
-    openWebSocket(onMessage, 0);
+    openWebSocket(onMessage, undefined, [[${queueManager.id}]]);
 </script>
 </body>
 </html>

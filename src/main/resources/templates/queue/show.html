@@ -2,7 +2,7 @@
 <html  lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(_, ~{}, ~{}, ~{::div}, ~{::script})}">
 <body>
 <div>
-    <div id="queueInfo" style="width: 100%;height:400px;"></div>
+    <div id="queueInfo" class="echars"></div>
 </div>
 <script>
 
@@ -57,7 +57,13 @@
             type: 'line',
             showSymbol: false,
             hoverAnimation: false,
-            data: data
+            data: data,
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'},
+                    {type: 'min', name: '最小值'}
+                ]
+            }
         }]
     };
 

@@ -1,23 +1,31 @@
 package online.zhaopei.mqoperation.task;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.constants.MQConstants;
+import online.zhaopei.mqoperation.constant.CommonConstant;
 import online.zhaopei.mqoperation.domain.Queue;
 import online.zhaopei.mqoperation.service.QueueService;
 import online.zhaopei.mqoperation.utils.CommonUtils;
 import online.zhaopei.mqoperation.websocket.QueueWebSocket;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 @Component
 public class MonitorQueueStatusTask {
@@ -65,13 +73,64 @@ public class MonitorQueueStatusTask {
     }
 
     public int getQueueDepth(long id) {
-        try {
-            return this.getQueueTaskById(id).getCurrentDepth();
-        } catch (MQException e) {
-            CommonUtils.logError(logger, e);
-            return 0;
+        if (CommonConstant.DEBUG) {
+            return (int)(Math.random() * 1000000);
+        } else {
+            try {
+                return this.getQueueTaskById(id).getCurrentDepth();
+            } catch (MQException e) {
+                CommonUtils.logError(logger, e);
+                return 0;
+            }
         }
-//        return (int)(Math.random() * 1000);
+    }
+
+    public List<Integer> getQueueDepthByQueueMangerId(long id) {
+        List<Queue> queueList = this.queueService.select(new Queue(){{
+            this.setManagerId(id);
+        }});
+//        List<Integer> depthList = queueList.stream().map(queue -> getQueueDepth(queue.getId())).collect(Collectors.toList());
+        List<Integer> depthList = Lists.transform(queueList, new Function<Queue, Integer>() {
+            @Override
+            public Integer apply(@Nullable Queue input) {
+                return getQueueDepth(input.getId());
+            }
+        });
+
+        return depthList;
+    }
+
+    public List<Integer> getAllQueueDepth() {
+        List<Queue> queueList = this.queueService.select(new Queue());
+        return Lists.transform(queueList, new Function<Queue, Integer>() {
+            @Override
+            public Integer apply(@Nullable Queue input) {
+                return getQueueDepth(input.getId());
+            }
+        });
+    }
+
+    public JSONObject getQueueDepthJsonByManagerId(long qmid) {
+        return this.convertListDepthToJson(this.getQueueDepthByQueueMangerId(qmid));
+    }
+
+    public JSONObject getAllQueueDepthJson() {
+        return this.convertListDepthToJson(this.getAllQueueDepth());
+    }
+
+    public JSONObject convertListDepthToJson(List<Integer> depthList) {
+        String time = CommonConstant.DATE_TIME_FORMAT.format(Calendar.getInstance().getTime());
+        JSONObject timeDepthJson = new JSONObject();
+        JSONArray timeDepthArray = new JSONArray();
+        JSONArray tempTimeDepth = null;
+        for (int d : depthList) {
+            tempTimeDepth = new JSONArray();
+            tempTimeDepth.add(time);
+            tempTimeDepth.add(d);
+            timeDepthArray.add(tempTimeDepth);
+        }
+        timeDepthJson.put("data", timeDepthArray);
+        return timeDepthJson;
     }
 
     public void closeMQ() {

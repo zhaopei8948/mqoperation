@@ -2,20 +2,21 @@
 <html  lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(_, ~{}, ~{}, ~{::div}, ~{})}">
 <body>
 <div>
-    <form th:action="@{/queues/add}" method="post">
+    <form th:action="@{${queue.id == null ? '/queues/add' : '/queues/update'}}" method="post">
         <input type="hidden" name="id" th:value="${queue.id}"/>
         <div class="form-group">
             <label>名称</label>
-            <input type="text" class="form-control" placeholder="名称" name="name" required="required"/>
+            <input type="text" class="form-control" placeholder="名称" name="name" required="required" th:value="${queue.name}"/>
         </div>
         <div class="form-group">
             <label>描述</label>
-            <input type="text" class="form-control" placeholder="描述" name="describe" required="required"/>
+            <input type="text" class="form-control" placeholder="描述" name="describe" required="required" th:value="${queue.describe}"/>
         </div>
         <div class="form-group">
             <label>队列管理器</label>
             <select class="form-control" name="managerId" required="required">
-                <option th:each="qm : ${queueManagerList}" th:value="${qm.id}" th:text="${qm.getName()} + ':' + ${qm.describe}"></option>
+                <option th:each="qm : ${queueManagerList}" th:value="${qm.id}" th:text="${qm.getName()} + ':' + ${qm.describe}"
+                th:selected="${qm.id == queue.managerId}"></option>
             </select>
         </div>
         <div class="form-group">

@@ -22,7 +22,7 @@
                 <td th:text="${q.describe}"></td>
                 <td>
                     <a th:href="@{/queues/delete(id=${q.id})}" th:onclick="return confirm('确定要删除 [[${q.name}]] 队列?')" class="btn btn-danger btn-sm">删除</a>
-                    <!--<button type="button" class="btn btn-info btn-sm" th:onclick="openWebSocket(onMessage, [[${q.id}]])">监控</button>-->
+                    <a class="btn btn-primary btn-sm" th:href="@{/queues/toUpdate(id=${q.id})}">更新</a>
                     <a class="btn btn-info btn-sm" th:href="@{/queues/show(id=${q.id})}">监控</a>
                 </td>
             </tr>

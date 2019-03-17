@@ -1,5 +1,6 @@
 package online.zhaopei.mqoperation.runner;
 
+import online.zhaopei.mqoperation.utils.CommonUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +14,8 @@ public class ReadConfigRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+//        String sql = "delete from queue where and manager_id";
+//        logger.info(CommonUtils.removeAnd(sql));
 //        BufferedReader br = null;
 //        String line = null;
 //        StringBuilder result = new StringBuilder("");

@@ -1,9 +1,13 @@
+var DEBUG = false;
+
 function openWebSocket(onMessage, qid, qmid) {
     var wsServer = 'ws://' + location.host + "/maintain/monitors/queuews";
-    // var wsServer = 'ws://127.0.0.1:8082/maintain/monitors/queuews';
-    if ("undefined" != qid) {
+    if (DEBUG) {
+        wsServer = 'ws://127.0.0.1:8082/maintain/monitors/queuews';
+    }
+    if (undefined != qid) {
         wsServer += "?qid=" + qid;
-    } else if("undefined" != qmid) {
+    } else if(undefined != qmid) {
         wsServer += "?qmid=" + qmid;
     }
     var websocket = new WebSocket(wsServer);

@@ -53,9 +53,10 @@ public class QueuesController {
             redirectAttributes.addFlashAttribute("status", "添加队列成功!");
         } catch (Exception e) {
             CommonUtils.logError(logger, e);
-            redirectAttributes.addFlashAttribute("status", "添加队列失败!");
-            redirectAttributes.addFlashAttribute("info", e.getMessage());
-            modelAndView.setViewName("redirect:/queues/toAdd");
+            modelAndView.addObject("status", "添加队列失败!");
+            modelAndView.addObject("queue", queue);
+            modelAndView.addObject("info", e.getMessage());
+            modelAndView.setViewName("queue/form");
         }
         return modelAndView;
     }
@@ -78,10 +79,10 @@ public class QueuesController {
             redirectAttributes.addFlashAttribute("status", "更新队列成功!");
         } catch (Exception e) {
             CommonUtils.logError(logger, e);
-            redirectAttributes.addAttribute("id", queue.getId());
-            redirectAttributes.addFlashAttribute("status", "更新队列失败!");
-            redirectAttributes.addFlashAttribute("info", e.getMessage());
-            modelAndView.setViewName("redirect:/queues/toUpdate");
+            modelAndView.addObject("status", "更新队列失败!");
+            modelAndView.addObject("queue", queue);
+            modelAndView.addObject("info", e.getMessage());
+            modelAndView.setViewName("queue/form");
         }
 
         return modelAndView;

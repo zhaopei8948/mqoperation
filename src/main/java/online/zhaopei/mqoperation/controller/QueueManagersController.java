@@ -1,7 +1,9 @@
 package online.zhaopei.mqoperation.controller;
 
+import online.zhaopei.mqoperation.domain.Queue;
 import online.zhaopei.mqoperation.domain.QueueManager;
 import online.zhaopei.mqoperation.service.QueueManagerService;
+import online.zhaopei.mqoperation.service.QueueService;
 import online.zhaopei.mqoperation.utils.CommonUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +24,9 @@ public class QueueManagersController {
 
     @Autowired
     private QueueManagerService queueManagerService;
+
+    @Autowired
+    private QueueService queueService;
 
     @RequestMapping
     public ModelAndView index(QueueManager queueManager) {
@@ -47,8 +52,10 @@ public class QueueManagersController {
             redirectAttributes.addFlashAttribute("status", "添加队列管理器成功!");
         } catch (Exception e){
             CommonUtils.logError(logger, e);
-            redirectAttributes.addFlashAttribute("status", "添加队列管理器失败!");
-            redirectAttributes.addFlashAttribute("info", e.getMessage());
+            modelAndView.addObject("status", "添加队列管理器失败!");
+            modelAndView.addObject("info", e.getMessage());
+            modelAndView.addObject("queueManager", queueManager);
+            modelAndView.setViewName("queuemanager/form");
         }
         return modelAndView;
     }
@@ -58,10 +65,10 @@ public class QueueManagersController {
         ModelAndView modelAndView = new ModelAndView("redirect:/queueManagers");
         try {
             this.queueManagerService.deleteById(id);
-            redirectAttributes.addFlashAttribute("status", "删除成功!");
+            redirectAttributes.addFlashAttribute("status", "删除队列管理器成功!");
         } catch (Exception e) {
             CommonUtils.logError(logger, e);
-            redirectAttributes.addFlashAttribute("status", "删除失败!");
+            redirectAttributes.addFlashAttribute("status", "删除队列管理器失败!");
             redirectAttributes.addFlashAttribute("info", e.getMessage());
         }
         return modelAndView;
@@ -75,9 +82,30 @@ public class QueueManagersController {
     }
 
     @PostMapping("/update")
-    public ModelAndView update(QueueManager queueManager) {
+    public ModelAndView update(QueueManager queueManager, RedirectAttributes redirectAttributes) {
         ModelAndView modelAndView = new ModelAndView("redirect:/queueManagers");
-        this.queueManagerService.update(queueManager);
+        try {
+            this.queueManagerService.update(queueManager);
+            redirectAttributes.addFlashAttribute("status", "更新队列管理器成功!");
+        } catch (Exception e){
+            CommonUtils.logError(logger, e);
+            modelAndView.addObject("status", "更新队列管理器失败!");
+            modelAndView.addObject("info", e.getMessage());
+            modelAndView.addObject("queueManager", queueManager);
+            modelAndView.setViewName("queuemanager/form");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping("/show")
+    public ModelAndView show(long id) {
+        ModelAndView modelAndView = new ModelAndView("queuemanager/show");
+        modelAndView.addObject("queueManager", this.queueManagerService.selectById(id));
+        List<Queue> queueList = this.queueService.select(new Queue() {{
+            this.setManagerId(id);
+        }});
+        logger.info("size=" + queueList.size());
+        modelAndView.addObject("queueList", queueList);
         return modelAndView;
     }
 }

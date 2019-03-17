@@ -2,6 +2,7 @@ package online.zhaopei.mqoperation.dao.impl;
 
 import online.zhaopei.mqoperation.dao.QueueManagerDao;
 import online.zhaopei.mqoperation.domain.QueueManager;
+import online.zhaopei.mqoperation.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -84,7 +85,7 @@ public class QueueManagerDaoImpl implements QueueManagerDao {
         StringBuilder sql = new StringBuilder("delete from queue_manager where ");
         sql.append(this.buildConditionSql(queueManager, false));
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(queueManager);
-        return this.namedParameterJdbcTemplate.update(sql.toString(), namedParameters);
+        return this.namedParameterJdbcTemplate.update(CommonUtils.removeAnd(sql.toString()), namedParameters);
     }
 
     @Override
