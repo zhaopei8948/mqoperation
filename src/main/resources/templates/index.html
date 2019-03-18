@@ -73,10 +73,15 @@
         },
         tooltip: {
             trigger: 'axis',
-            // formatter: function (params) {
-            //     params = params[0];
-            //     return params.value[0] + '<br/>' + params.seriesName + ':[' + params.value[1] + "]";
-            // },
+            formatter: function (params) {
+                var result = params[0].value[0];
+                for(var index in params) {
+                    param = params[index];
+                    result += '<br /><i style="width:16px;height:16px;border-radius:50%;background-color:' + param.color + ';display: inline-block;"></i>&nbsp;'
+                        + param.seriesName + ':[' + param.value[1] + "]";
+                }
+                return result;
+            },
             axisPointer: {
                 animation: false
             }

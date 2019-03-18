@@ -33,7 +33,9 @@
             trigger: 'axis',
             formatter: function (params) {
                 params = params[0];
-                return params.value[0] + '<br/>' + params.seriesName + ':[' + params.value[1] + "]";
+                return params.value[0] + '<br />'
+                    + '<i style="width:16px;height:16px;border-radius:50%;background-color:' + params.color + ';display: inline-block;"></i>&nbsp;'
+                    + params.seriesName + ':[' + params.value[1] + "]";
             },
             axisPointer: {
                 animation: false
