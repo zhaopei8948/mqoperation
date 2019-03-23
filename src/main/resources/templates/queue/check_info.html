@@ -1,0 +1,25 @@
+<!doctype html>
+<html  lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(_, ~{}, ~{}, ~{::div}, ~{})}">
+<body>
+<div>
+    <ul class="list-group">
+        <li class="list-group-item">队列名称: [[${queue.name}]]</li>
+        <li class="list-group-item list-group-item-info">队列描述: [[${queue.describe}]]</li>
+        <li class="list-group-item">所属队列管理器: [[${queue.queueManager.name}]]</li>
+        <li class="list-group-item list-group-item-info">队列管理器描述: [[${queue.queueManager.describe}]]</li>
+        <li class="list-group-item">队列管理器IP: [[${queue.queueManager.ip}]]</li>
+        <li class="list-group-item list-group-item-info">队列管理器端口: [[${queue.queueManager.port}]]</li>
+        <li class="list-group-item">队列管理器字符集: [[${queue.queueManager.ccsid}]]</li>
+        <li class="list-group-item list-group-item-info">队列管理器通道: [[${queue.queueManager.channel}]]</li>
+        <li class="list-group-item ">禁止取出: [[${mqQueueInfo.inhibitGet}]]</li>
+        <li class="list-group-item list-group-item-info">禁止放入: [[${mqQueueInfo.inhibitPut}]]</li>
+        <li class="list-group-item">最大深度: [[${mqQueueInfo.maximumDepth}]]</li>
+        <li class="list-group-item list-group-item-info">最大消息长度: [[${mqQueueInfo.maximumMessageLength}]]</li>
+        <li class="list-group-item">打开输入计数: [[${mqQueueInfo.openInputCount}]]</li>
+        <li class="list-group-item list-group-item-info">打开输出计数: [[${mqQueueInfo.openOutputCount}]]</li>
+        <li class="list-group-item">队列类型: [[${MQQueueType[mqQueueInfo.queueType]}]]</li>
+        <li class="list-group-item list-group-item-info">队列当前深度: [[${MQQueueType[mqQueueInfo.currentDepth]}]]</li>
+    </ul>
+</div>
+</body>
+</html>

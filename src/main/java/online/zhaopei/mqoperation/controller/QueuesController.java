@@ -1,7 +1,12 @@
 package online.zhaopei.mqoperation.controller;
 
+import com.ibm.mq.MQQueue;
+import com.ibm.mq.constants.MQConstants;
+import online.zhaopei.mqoperation.constant.QueueConstant;
+import online.zhaopei.mqoperation.domain.MQQueueInfo;
 import online.zhaopei.mqoperation.domain.QueueManager;
 import online.zhaopei.mqoperation.service.QueueManagerService;
+import online.zhaopei.mqoperation.task.MonitorQueueStatusTask;
 import online.zhaopei.mqoperation.utils.CommonUtils;
 import online.zhaopei.mqoperation.domain.Queue;
 import online.zhaopei.mqoperation.service.QueueService;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -27,6 +33,9 @@ public class QueuesController {
 
     @Autowired
     private QueueManagerService queueManagerService;
+
+    @Autowired
+    private MonitorQueueStatusTask monitorQueueStatusTask;
 
     @RequestMapping
     public ModelAndView index(Queue queue) {
@@ -105,6 +114,29 @@ public class QueuesController {
     public ModelAndView show(long id) {
         ModelAndView modelAndView = new ModelAndView("queue/show");
         modelAndView.addObject("queue", this.queueService.getQueueAndManager(id));
+        return modelAndView;
+    }
+
+    @RequestMapping("/checkInfo")
+    public ModelAndView checkInfo(long id) {
+        ModelAndView modelAndView = new ModelAndView("queue/check_info");
+        modelAndView.addObject("queue", this.queueService.getQueueAndManager(id));
+        MQQueue mqQueue = this.monitorQueueStatusTask.getQueueTaskById(id);
+        MQQueueInfo mqQueueInfo = new MQQueueInfo();
+        try {
+            mqQueueInfo.setCurrentDepth(mqQueue.getCurrentDepth());
+            mqQueueInfo.setInhibitGet(mqQueue.getInhibitGet() == MQConstants.MQQA_GET_INHIBITED);
+            mqQueueInfo.setInhibitPut(mqQueue.getInhibitPut() == MQConstants.MQQA_PUT_INHIBITED);
+            mqQueueInfo.setMaximumDepth(mqQueue.getMaximumDepth());
+            mqQueueInfo.setMaximumMessageLength(mqQueue.getMaximumMessageLength());
+            mqQueueInfo.setOpenInputCount(mqQueue.getOpenInputCount());
+            mqQueueInfo.setOpenOutputCount(mqQueue.getOpenOutputCount());
+            mqQueueInfo.setQueueType(mqQueue.getQueueType());
+        } catch (Exception e) {
+            CommonUtils.logError(logger, e);
+        }
+        modelAndView.addObject("mqQueueInfo", mqQueueInfo);
+        modelAndView.addObject("MQQueueType", QueueConstant.MQQUEUE_TYPE_MAP);
         return modelAndView;
     }
 }
