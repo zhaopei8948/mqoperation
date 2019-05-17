@@ -12,7 +12,7 @@
 
     function onMessage(message) {
         // console.info("message=[" + message + "] type=[" + typeof(message) + "]");
-        if (data.length > 900) {
+        if (data.length > 1800) {
             data.shift();
         }
         data.push(message.split(","));
