@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -100,6 +101,18 @@ public class QueueManagersController {
     @RequestMapping("/show")
     public ModelAndView show(long id) {
         ModelAndView modelAndView = new ModelAndView("queuemanager/show");
+        modelAndView.addObject("queueManager", this.queueManagerService.selectById(id));
+        List<Queue> queueList = this.queueService.select(new Queue() {{
+            this.setManagerId(id);
+        }});
+        logger.info("size=" + queueList.size());
+        modelAndView.addObject("queueList", queueList);
+        return modelAndView;
+    }
+
+    @RequestMapping("/largeScreenDisplay/{id}")
+    public ModelAndView largeScreenDisplay(@PathVariable(value = "id") long id) {
+        ModelAndView modelAndView = new ModelAndView("large_screen_display");
         modelAndView.addObject("queueManager", this.queueManagerService.selectById(id));
         List<Queue> queueList = this.queueService.select(new Queue() {{
             this.setManagerId(id);

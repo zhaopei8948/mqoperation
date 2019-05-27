@@ -1,0 +1,137 @@
+<!doctype html>
+<html  lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MQ大屏监控</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
+
+</head>
+<body style="background: transparent; color: white;">
+<div class="container" style="width: 863px; height: 472px;">
+    <div style="">
+        <div id="queuesInfo" style="height: 472px;"></div>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1-rc1/echarts.min.js"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:inline="javascript">
+
+    var data = new Array([[${#lists.size(queueList)}]]);
+    var queues = [[${queueList}]];
+    var legendData = [];
+    var queueInfoChar = echarts.init(document.getElementById('queuesInfo'));
+
+    function onMessage(message) {
+        // console.info("message=[" + message + "] type=[" + typeof(message) + "]");
+        messageJson = JSON.parse(message);
+        dataJson = messageJson["data"];
+        var seriesData = [];
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].length > 900) {
+                data[i].shift();
+            }
+
+            data[i].push(dataJson[i]);
+            seriesData.push({data: data[i]});
+        }
+
+
+        // console.info("data=" + data);
+        queueInfoChar.setOption({
+            series: seriesData
+        });
+    }
+    var series = [];
+    for (var i = 0; i < data.length; i++) {
+        data[i] = [];
+        series.push({
+            name: queues[i].name + ":" + queues[i].describe,
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            data: data[i],
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'}
+                ]
+            }
+        });
+        legendData.push(queues[i].name + ":" + queues[i].describe);
+    }
+
+
+    option = {
+        title: {
+            text: ''
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                var result = params[0].value[0];
+                for(var index in params) {
+                    param = params[index];
+                    result += '<br /><i style="width:16px;height:16px;border-radius:50%;background-color:' + param.color + ';display: inline-block;"></i>&nbsp;'
+                        + param.seriesName + ':[' + param.value[1] + "]";
+                }
+                return result;
+            },
+            axisPointer: {
+                animation: false
+            }
+        },
+        legend: {
+            data: legendData,
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        xAxis: {
+            type: 'time',
+            splitLine: {
+                show: false
+            },
+            nameTextStyle: {
+                color: ['#fff']
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: ['#fff']
+                }
+            },
+            nameTextStyle: {
+                color: ['#fff']
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            }
+        },
+        series: series
+    };
+
+    queueInfoChar.setOption(option);
+    openWebSocket(onMessage, undefined, [[${queueManager.id}]]);
+</script>
+</body>
+</html>

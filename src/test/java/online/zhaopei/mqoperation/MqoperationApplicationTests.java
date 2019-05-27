@@ -8,17 +8,17 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class MqoperationApplicationTests {
 
 	private static final Log logger = LogFactory.getLog(MqoperationApplicationTests.class);
 
-	@Test
+//	@Test
 	public void contextLoads() {
 	}
 
-	@Test
+//	@Test
 	public void removeAdd() {
 		String sql = "delete from queue where and manager_id";
 		logger.info(CommonUtils.removeAnd(sql));
