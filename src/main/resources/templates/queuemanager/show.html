@@ -44,6 +44,75 @@
                 data: [
                     {type: 'max', name: '最大值'}
                 ]
+            },
+            markLine: {
+                silent: true,
+                data: [{
+                    yAxis: 100,
+                    lineStyle: {
+                        color: 'green'
+                    }
+                }, {
+                    yAxis: 1000,
+                    lineStyle: {
+                        color: 'green'
+                    }
+                }, {
+                    yAxis: 5000,
+                    lineStyle: {
+                        color: 'green'
+                    }
+                }, {
+                    yAxis: 10000,
+                    lineStyle: {
+                        color: 'green'
+                    }
+                }, {
+                    yAxis: 50000,
+                    lineStyle: {
+                        color: 'yellow'
+                    }
+                }, {
+                    yAxis: 100000,
+                    lineStyle: {
+                        color: 'yellow'
+                    }
+                }, {
+                    yAxis: 150000,
+                    lineStyle: {
+                        color: 'yellow'
+                    }
+                }, {
+                    yAxis: 200000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 300000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 500000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 1000000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 2000000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 5000000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }]
             }
         });
         legendData.push(queues[i].name + ":" + queues[i].describe);
@@ -52,7 +121,7 @@
 
     option = {
         title: {
-            text: '[[${queueManager.name}]]:[[${queueManager.describe}]]'
+            text: ''
         },
         tooltip: {
             trigger: 'axis',
@@ -66,7 +135,7 @@
                 return result;
             },
             axisPointer: {
-                animation: false
+                type: 'cross'
             }
         },
         legend: {
@@ -82,7 +151,7 @@
             type: 'value',
             boundaryGap: [0, '100%'],
             splitLine: {
-                show: true
+                show: false
             }
         },
         series: series

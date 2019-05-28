@@ -48,17 +48,70 @@
             markLine: {
                 silent: true,
                 data: [{
-                    yAxis: 100
+                    yAxis: 100,
+                    lineStyle: {
+                        color: 'green'
+                    }
                 }, {
-                    yAxis: 1000
+                    yAxis: 1000,
+                    lineStyle: {
+                        color: 'green'
+                    }
                 }, {
-                    yAxis: 5000
+                    yAxis: 5000,
+                    lineStyle: {
+                        color: 'green'
+                    }
                 }, {
-                    yAxis: 10000
+                    yAxis: 10000,
+                    lineStyle: {
+                        color: 'green'
+                    }
                 }, {
-                    yAxis: 50000
+                    yAxis: 50000,
+                    lineStyle: {
+                        color: 'yellow'
+                    }
                 }, {
-                    yAxis: 100000
+                    yAxis: 100000,
+                    lineStyle: {
+                        color: 'yellow'
+                    }
+                }, {
+                    yAxis: 150000,
+                    lineStyle: {
+                        color: 'yellow'
+                    }
+                }, {
+                    yAxis: 200000,
+                    lineStyle: {
+                       color: 'red'
+                    }
+                }, {
+                    yAxis: 300000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 500000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 1000000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 2000000,
+                    lineStyle: {
+                        color: 'red'
+                    }
+                }, {
+                    yAxis: 5000000,
+                    lineStyle: {
+                        color: 'red'
+                    }
                 }]
             }
         });
@@ -68,7 +121,7 @@
 
     option = {
         title: {
-            text: '所有队列'
+            text: ''
         },
         tooltip: {
             trigger: 'axis',
@@ -82,7 +135,7 @@
                 return result;
             },
             axisPointer: {
-                animation: false
+                type: 'cross'
             }
         },
         legend: {
@@ -98,44 +151,44 @@
             type: 'value',
             boundaryGap: [0, '100%'],
             splitLine: {
-                show: true
+                show: false
             }
         },
-        visualMap: {
-            top: 10,
-            right: 10,
-            pieces: [{
-                gt: 0,
-                lte: 100,
-                color: '#096'
-            }, {
-                gt: 100,
-                lte: 1000,
-                color: '#ffde33'
-            }, {
-                gt: 1000,
-                lte: 5000,
-                color: '#ff9933'
-            }, {
-                gt: 5000,
-                lte: 10000,
-                color: '#cc0033'
-            }, {
-                gt: 10000,
-                lte: 50000,
-                color: '#660099'
-            }, {
-                gt: 50000,
-                lte: 100000,
-                color: '#7e0023'
-            }, {
-                gt: 100000,
-                color: '#0000FF'
-            }],
-            outOfRange: {
-                color: '#999'
-            }
-        },
+        // visualMap: {
+        //     top: 10,
+        //     right: 10,
+        //     pieces: [{
+        //         gt: 0,
+        //         lte: 100,
+        //         color: '#096'
+        //     }, {
+        //         gt: 100,
+        //         lte: 1000,
+        //         color: '#ffde33'
+        //     }, {
+        //         gt: 1000,
+        //         lte: 5000,
+        //         color: '#ff9933'
+        //     }, {
+        //         gt: 5000,
+        //         lte: 10000,
+        //         color: '#cc0033'
+        //     }, {
+        //         gt: 10000,
+        //         lte: 50000,
+        //         color: '#660099'
+        //     }, {
+        //         gt: 50000,
+        //         lte: 100000,
+        //         color: '#7e0023'
+        //     }, {
+        //         gt: 100000,
+        //         color: '#0000FF'
+        //     }],
+        //     outOfRange: {
+        //         color: '#999'
+        //     }
+        // },
         series: series
     };
 
