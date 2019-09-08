@@ -9,14 +9,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.xml.ws.RequestWrapper;
 import java.util.List;
 
+@CrossOrigin
 @Controller
 @RequestMapping("/queueManagers")
 public class QueueManagersController {
@@ -107,6 +107,30 @@ public class QueueManagersController {
         }});
         logger.info("size=" + queueList.size());
         modelAndView.addObject("queueList", queueList);
+        return modelAndView;
+    }
+
+    @RequestMapping("/getQueueListByQmid")
+    @ResponseBody
+    public List<Queue> getQueueListByQmid(long id) {
+        return this.queueService.select(new Queue() {{
+            this.setManagerId(id);
+        }});
+    }
+
+    @RequestMapping("/displayQueueInfos/{id}/{width}/{height}")
+    public ModelAndView displayQueueInfos(@PathVariable(value = "id") long id,
+                                          @PathVariable(value = "width") int width,
+                                          @PathVariable(value = "height") int height) {
+        ModelAndView modelAndView = new ModelAndView("display_queue_infos");
+        modelAndView.addObject("queueManager", this.queueManagerService.selectById(id));
+        List<Queue> queueList = this.queueService.select(new Queue() {{
+            this.setManagerId(id);
+        }});
+        logger.info("size=" + queueList.size());
+        modelAndView.addObject("queueList", queueList);
+        modelAndView.addObject("width", width);
+        modelAndView.addObject("height", height);
         return modelAndView;
     }
 
