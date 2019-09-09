@@ -63,7 +63,7 @@ public class MonitorQueueStatusTask {
                     manager = new MQQueueManager(queue.getQueueManager().getName(), properties);
                     this.queueManagerMap.put(key, manager);
                 }
-                mqqueue = manager.accessQueue(queue.getName(), MQConstants.MQOO_INQUIRE);
+                mqqueue = manager.accessQueue(queue.getName(), MQConstants.MQOO_INQUIRE | MQConstants.MQOO_INPUT_AS_Q_DEF);
                 this.queueMap.put(id, mqqueue);
             } catch (MQException e) {
                 CommonUtils.logError(logger, e);
