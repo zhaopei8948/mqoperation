@@ -118,10 +118,11 @@ public class QueueManagersController {
         }});
     }
 
-    @RequestMapping("/displayQueueInfos/{id}/{width}/{height}")
+    @RequestMapping("/displayQueueInfos/{id}/{width}/{height}/{fontSize}")
     public ModelAndView displayQueueInfos(@PathVariable(value = "id") long id,
                                           @PathVariable(value = "width") int width,
-                                          @PathVariable(value = "height") int height) {
+                                          @PathVariable(value = "height") int height,
+                                          @PathVariable(value = "fontSize") int fontSize) {
         ModelAndView modelAndView = new ModelAndView("display_queue_infos");
         modelAndView.addObject("queueManager", this.queueManagerService.selectById(id));
         List<Queue> queueList = this.queueService.select(new Queue() {{
@@ -131,6 +132,7 @@ public class QueueManagersController {
         modelAndView.addObject("queueList", queueList);
         modelAndView.addObject("width", width);
         modelAndView.addObject("height", height);
+        modelAndView.addObject("fontSize", fontSize);
         return modelAndView;
     }
 

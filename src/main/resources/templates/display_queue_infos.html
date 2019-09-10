@@ -24,6 +24,7 @@
 
     var width = [[${width}]];
     var height = [[${height}]];
+    var fontSize = [[${fontSize}]]
     $("#queuesInfo").css("width", width);
     $("#queuesInfo").css("height", height);
     var data = new Array([[${#lists.size(queueList)}]]);
@@ -62,7 +63,7 @@
             data: data[i],
             markPoint: {
                 data: [
-                    {type: 'max', name: '最大值'}
+                    {type: 'max', name: '最大值', label: {fontSize: fontSize}}
                 ]
             },
             markLine: {
@@ -146,20 +147,26 @@
         tooltip: {
             trigger: 'axis',
             formatter: function (params) {
-                var result = params[0].value[0];
+                var result = "<span style='font-size: " + fontSize + "px;'>" + params[0].value[0] + "</span>";
                 for(var index in params) {
                     param = params[index];
-                    result += '<br /><i style="width:16px;height:16px;border-radius:50%;background-color:' + param.color + ';display: inline-block;"></i>&nbsp;'
-                        + param.seriesName + ':[' + param.value[1] + "]";
+                    result += '<br /><i style="width:' + fontSize + 'px;height:' + fontSize + 'px;border-radius:50%;background-color:' + param.color + ';display: inline-block;"></i>&nbsp;'
+                        + "<span style='font-size: " + fontSize + "px;'>" + param.seriesName + ':[' + param.value[1] + "]</span>";
                 }
                 return result;
             },
             axisPointer: {
-                type: 'cross'
+                type: 'cross',
+                label: {
+                    fontSize: fontSize
+                }
             }
         },
         legend: {
-            data: legendData
+            data: legendData,
+            textStyle: {
+                fontSize: fontSize
+            }
         },
         xAxis: {
             type: 'time',
@@ -167,7 +174,7 @@
                 show: false
             },
             axisLabel: {
-                rotate: 45
+                fontSize: fontSize
             }
         },
         yAxis: {
@@ -175,6 +182,9 @@
             boundaryGap: [0, '100%'],
             splitLine: {
                 show: false
+            },
+            axisLabel: {
+                fontSize: fontSize
             }
         },
         series: series
