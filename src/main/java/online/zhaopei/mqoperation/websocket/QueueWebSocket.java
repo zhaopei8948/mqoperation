@@ -1,7 +1,5 @@
 package online.zhaopei.mqoperation.websocket;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.timeout.IdleStateEvent;
 import online.zhaopei.mqoperation.constant.CommonConstant;
@@ -20,7 +18,6 @@ import org.yeauty.pojo.Session;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledFuture;
 
@@ -58,8 +55,9 @@ public class QueueWebSocket {
                 public void run() {
                     try {
                         String time = CommonConstant.DATE_TIME_FORMAT.format(Calendar.getInstance().getTime());
-                        if (!StringUtils.isEmpty(qmid) && Long.valueOf(qmid) > 0) {
-                            session.sendText(monitorQueueStatusTask.getQueueDepthJsonByManagerId(Long.valueOf(qmid)).toJSONString());
+                        if (!StringUtils.isEmpty(qmid)) {
+                            //session.sendText(monitorQueueStatusTask.getQueueDepthJsonByManagerId(Long.valueOf(qmid)).toJSONString());
+                            session.sendText(monitorQueueStatusTask.getQueueDepthJsonByManagerIds(qmid).toJSONString());
                         } else {
                             if (Long.valueOf(qid) > 0) {
                                 session.sendText(time + "," + monitorQueueStatusTask.getQueueDepth(Long.valueOf(qid)));

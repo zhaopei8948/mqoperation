@@ -3,6 +3,8 @@ package online.zhaopei.mqoperation.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class Queue {
@@ -16,4 +18,6 @@ public class Queue {
     private Long managerId;
 
     private QueueManager queueManager;
+
+    private List<Long> managerIdList;
 }

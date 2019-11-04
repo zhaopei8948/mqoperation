@@ -63,6 +63,10 @@ public class QueueDaoImpl implements QueueDao {
         if (null != queue.getManagerId()) {
             conditionSql.append("and manager_id = :managerId");
         }
+
+        if (null != queue.getManagerIdList() && !queue.getManagerIdList().isEmpty()) {
+            conditionSql.append("and manager_id in (:managerIdList)");
+        }
         return conditionSql.toString();
     }
 

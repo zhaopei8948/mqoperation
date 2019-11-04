@@ -1,5 +1,8 @@
 package online.zhaopei.mqoperation.controller;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import online.zhaopei.mqoperation.domain.Queue;
 import online.zhaopei.mqoperation.domain.QueueManager;
 import online.zhaopei.mqoperation.service.QueueManagerService;
@@ -7,6 +10,7 @@ import online.zhaopei.mqoperation.service.QueueService;
 import online.zhaopei.mqoperation.utils.CommonUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.xml.ws.RequestWrapper;
+import java.util.Arrays;
 import java.util.List;
 
 @CrossOrigin
@@ -118,15 +123,23 @@ public class QueueManagersController {
         }});
     }
 
-    @RequestMapping("/displayQueueInfos/{id}/{width}/{height}/{fontSize}")
-    public ModelAndView displayQueueInfos(@PathVariable(value = "id") long id,
+    @RequestMapping("/displayQueueInfos/{ids}/{width}/{height}/{fontSize}")
+    public ModelAndView displayQueueInfos(@PathVariable(value = "ids") String ids,
                                           @PathVariable(value = "width") int width,
                                           @PathVariable(value = "height") int height,
                                           @PathVariable(value = "fontSize") int fontSize) {
         ModelAndView modelAndView = new ModelAndView("display_queue_infos");
-        modelAndView.addObject("queueManager", this.queueManagerService.selectById(id));
+        modelAndView.addObject("ids", ids);
+        List<Long> managerIdList = Lists.newArrayList(Iterables.transform(Arrays.asList(ids.split(",")),
+                new Function<String, Long>() {
+                    @Nullable
+                    @Override
+                    public Long apply(@Nullable String input) {
+                        return Long.valueOf(input);
+                    }
+                }));
         List<Queue> queueList = this.queueService.select(new Queue() {{
-            this.setManagerId(id);
+            this.setManagerIdList(managerIdList);
         }});
         logger.info("size=" + queueList.size());
         modelAndView.addObject("queueList", queueList);

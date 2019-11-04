@@ -3,6 +3,7 @@ package online.zhaopei.mqoperation.task;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
@@ -20,10 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -100,6 +98,30 @@ public class MonitorQueueStatusTask {
         return depthList;
     }
 
+    public List<Integer> getQueueDepthByQueueMangerIds(String mangerIds) {
+        List<Long> managerIdList = Lists.newArrayList(Iterables.transform(Arrays.asList(mangerIds.split(",")),
+                new Function<String, Long>() {
+                    @Nullable
+                    @Override
+                    public Long apply(@Nullable String input) {
+                        return Long.valueOf(input);
+                    }
+                }));
+        List<Queue> queueList = this.queueService.select(new Queue(){{
+            this.setManagerIdList(managerIdList);
+        }});
+
+        List<Integer> depthList = Lists.transform(queueList, new Function<Queue, Integer>() {
+            @Override
+            public Integer apply(@Nullable Queue input) {
+                return getQueueDepth(input.getId());
+            }
+        });
+
+        return depthList;
+    }
+
+
     public List<Integer> getAllQueueDepth() {
         List<Queue> queueList = this.queueService.select(new Queue());
         return Lists.transform(queueList, new Function<Queue, Integer>() {
@@ -112,6 +134,10 @@ public class MonitorQueueStatusTask {
 
     public JSONObject getQueueDepthJsonByManagerId(long qmid) {
         return this.convertListDepthToJson(this.getQueueDepthByQueueMangerId(qmid));
+    }
+
+    public JSONObject getQueueDepthJsonByManagerIds(String qmids) {
+        return this.convertListDepthToJson(this.getQueueDepthByQueueMangerIds(qmids));
     }
 
     public JSONObject getAllQueueDepthJson() {
