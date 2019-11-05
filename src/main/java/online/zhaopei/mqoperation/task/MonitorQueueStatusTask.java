@@ -1,5 +1,6 @@
 package online.zhaopei.mqoperation.task;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
@@ -44,14 +45,16 @@ public class MonitorQueueStatusTask {
     public MQQueue getQueueTaskById(long id) {
         logger.info("id=[" + id + "]");
         Queue queue = this.queueService.getQueueAndManager(id);
-        logger.info("queue=[" + queue + "]");
+        logger.info("queue=[" + JSON.toJSONString(queue) + "] queueManager=[" + JSON.toJSONString(queue.getQueueManager()) + "]");
         Properties properties = new Properties();
         properties.put("hostname", queue.getQueueManager().getIp());
         properties.put("port", queue.getQueueManager().getPort());
         properties.put("channel", queue.getQueueManager().getChannel());
         properties.put("CCSID", queue.getQueueManager().getCcsid());
 
-        String key = properties.getProperty("hostname") + ":" + properties.getProperty("port");
+        logger.info("prop=[" + JSON.toJSONString(properties) + "]");
+        String key = properties.get("hostname") + ":" + properties.get("port");
+        logger.info("key=[" + key + "] port=[" + queue.getQueueManager().getPort() + "]");
 
         MQQueueManager manager = this.queueManagerMap.get(key);
         MQQueue mqqueue = queueMap.get(id);
@@ -61,6 +64,7 @@ public class MonitorQueueStatusTask {
                     manager = new MQQueueManager(queue.getQueueManager().getName(), properties);
                     this.queueManagerMap.put(key, manager);
                 }
+                logger.info("queue.name=[" + queue.getName() + "]");
                 mqqueue = manager.accessQueue(queue.getName(), MQConstants.MQOO_INQUIRE | MQConstants.MQOO_INPUT_AS_Q_DEF);
                 this.queueMap.put(id, mqqueue);
             } catch (MQException e) {
@@ -110,6 +114,8 @@ public class MonitorQueueStatusTask {
         List<Queue> queueList = this.queueService.select(new Queue(){{
             this.setManagerIdList(managerIdList);
         }});
+
+        logger.info("queueList=[" + JSON.toJSONString(queueList) + "]");
 
         List<Integer> depthList = Lists.transform(queueList, new Function<Queue, Integer>() {
             @Override
