@@ -16,6 +16,7 @@ import online.zhaopei.mqoperation.service.QueueService;
 import online.zhaopei.mqoperation.utils.CommonUtils;
 import online.zhaopei.mqoperation.websocket.QueueWebSocket;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -65,10 +66,21 @@ public class MonitorQueueStatusTask {
                     this.queueManagerMap.put(key, manager);
                 }
                 logger.info("queue.name=[" + queue.getName() + "]");
-                mqqueue = manager.accessQueue(queue.getName(), MQConstants.MQOO_INQUIRE | MQConstants.MQOO_INPUT_AS_Q_DEF);
+                try {
+                    mqqueue = manager.accessQueue(queue.getName(), MQConstants.MQOO_INQUIRE);
+                    try {
+                        mqqueue.getAttributeString(MQConstants.MQCA_CLUSTER_NAME, MQConstants.MQ_CLUSTER_NAME_LENGTH);
+                    } catch (MQException e) {
+                        mqqueue.close();
+                        mqqueue = manager.accessQueue(queue.getName(), MQConstants.MQOO_INQUIRE | MQConstants.MQOO_INPUT_AS_Q_DEF);
+                    }
+                } catch (MQException e) {
+                    CommonUtils.logError(logger, e);
+                }
                 this.queueMap.put(id, mqqueue);
             } catch (MQException e) {
                 CommonUtils.logError(logger, e);
+
             }
         }
         return mqqueue;
