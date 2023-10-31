@@ -1,5 +1,14 @@
 pluginManagement {
 	repositories {
+		//新增这 4 个
+		maven { url 'https://maven.aliyun.com/repository/public/' }
+		maven { url 'https://maven.aliyun.com/repository/google/' }
+		maven { url 'https://maven.aliyun.com/repository/jcenter/' }
+		maven { url 'https://maven.aliyun.com/repository/central/' }
+
+
+		google()
+		mavenCentral()
 		gradlePluginPortal()
 	}
 }
